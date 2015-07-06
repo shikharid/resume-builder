@@ -1,0 +1,232 @@
+ @import url(http://fonts.googleapis.com/css?family=Raleway);
+ body { 
+ 	margin : 0; 
+ 	font-family: 'Raleway', sans-serif;
+ 	min-width: 1286px;
+ }
+ #draggable { 
+ 	width: 150px; 
+ 	height: 150px; 
+ 	padding: 0.5em; 
+ }
+ #header { 
+ 	height: 60px; 
+ 	background: #222; 
+ 	color: #FFF;
+ }
+ #header h3{ 
+ 	padding: 15px 0 0 0; 
+ 	margin: 0; 
+ 	text-align: center;
+ }
+
+#content {
+	/*margin-top: 4em;*/
+}
+.box {
+	border: 1px solid #ccc;
+ 	background: #F2F2F2;
+ 	padding: 5px;
+}
+#tool-box {
+ 	float: left;
+ 	width: 10%;
+ 	height: 460px;
+ 	margin: 10px;
+ 	min-width: 150px;
+}
+#tool-box h3, #work-area > h3, #panels > h3, #panel-controls > h3 {
+	padding: 10px;
+	text-align: center;
+	background: #E2E2E2;
+	margin: -5px -5px;
+	border-bottom: 1px dashed #999;
+}
+.selected {
+	background: #999999;
+	color: #FFF;
+}
+#rt-panel {
+ 	float: left;
+ 	width: 10%;
+ 	min-width: 150px;
+ }
+#panel-controls {
+	padding-bottom: 20px;
+ 	margin: 10px;
+ 	width: 100%;
+ }
+ #panel-controls > ul > ul {
+ 	display: none;
+ 	position: relative;
+ }
+ #panel-controls > ul > ul > li[class="panel-title"] , #panels > ul > li[class="panel-title"], #panel-controls > ul >li[class="panel-title"]{
+ 	border-bottom: 1px dashed #999;
+ 	margin-top: -20px;
+ 	margin: -22px -5px 10px -5px;
+ 	margin-bottom: 20px;
+ }
+ .active {
+ 	display: block;
+ 	background: #3b5998 !important;
+ 	color: #FFF !important;
+ }
+#panels {
+ 	padding-bottom: 20px;
+ 	margin: 10px;
+ 	width: 100%;
+ 	
+ }
+
+.box-controls {
+	list-style-type: none;
+	padding: 0;
+}
+.box-controls >li {
+ 	display: block;
+ 	border: 1px solid #ccc;
+ 	background: #E2E2E2;
+ 	padding: 10px;
+ 	height: 20px;
+ 	text-align: center;
+ 	position: relative;
+ 	margin-bottom: 5px;
+}
+.box-controls > li > a {
+	color: #333;
+	height: 70%;
+	padding-top: 10px;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	left: 0;
+
+	text-decoration: none;
+}
+.box-controols > li > a:hover {
+	text-decoration: none;
+	color: #222;
+}
+.box-controls > li > .selected:hover {
+	color: #FFF;
+}
+
+.top-controls {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 20px;
+
+}
+.top-controls ul {
+	list-style-type: none;
+	padding: 0;
+	margin : 0;
+	float: right;
+}
+.top-controls ul > li {
+	display: inline;
+	cursor: pointer;
+
+}
+#trash {
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+#work-area {
+ 	float: left;
+ 	width: 70%;
+ 	min-height: 360px;
+ 	margin: 10px;
+ 	min-width: 350px;
+ }
+
+#work-area ol#dynamic-controls {
+	padding: 0;
+	display: block;
+	width: 100%;
+	min-height: 360px;
+	padding-bottom: 60px;
+	list-style-type: none;
+}
+#work-area ol > li:hover {
+	/*background: #F2F2F2;
+*/}
+#work-area ol#dynamic-controls >li {
+	padding: 5px;
+	display: block;
+	border: 1px dashed #ccc;
+	margin-bottom: 10px;
+	position: relative;
+}
+#work-area ol.dynamic-controls > li > input {
+	padding: 5px;
+	color: #222;
+}
+#work-area ol> li[data-elem="paragraph"]{
+	font-size: 0.9em;
+	padding: 2px;
+}
+
+.panel {
+	height: 30%;
+}
+
+.notice-text {
+	color: #999999;
+	font-size: 0.8em;
+}
+
+.dynamic-panel {
+	list-style-type: none;
+
+	border: 1px solid #ccc;
+	display : block;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+.dynamic-panel > li{
+	position: relative;
+	border: 1px dashed #ccc;
+	margin-bottom: 15px;
+}
+.dynamic-panel > li:last-child {
+	margin-bottom: 30px;
+}
+
+.trash {
+	background: url(../images/cross.png);
+	position: absolute;
+	cursor: pointer;
+	top: 2px;
+	right: 5px;
+	height: 15px;
+	width: 15px;
+
+	background-repeat: no-repeat;
+}
+.dynamic-panel > li.placeholder {
+	border: none !important;
+	border-bottom: 1px solid grey;
+}
+
+.helper-control {
+	background: #E2E2E2;
+	padding: 15px 30px;
+	border-radius: 4px;
+}
+
+#footer {
+	clear: both;
+	width: 100%;
+	bottom: 0;
+	background: #222;
+}
+#footer p{
+	padding: 10px;
+	text-align: center;
+	font-size: 0.8em;
+	color: #FFF;
+}
+#footer p >span {
+	color: #3b5998;
+	font-weight: bold;
+}
