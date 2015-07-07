@@ -131,11 +131,11 @@ jQuery(document).ready(function($) {
 			});
 		},
 
-		createJsonObject : function(obj) {
-			var $workarea = $('#dynamic-controls').find(' > ol');
-			console.log('length: '+$workarea.length);
+		createJsonObject : function(index ,parentId, context) {
+			var obj = [];
+
+			var $workarea = $(parentId).find('ol[data-elem="panel"]');
 			for (var i =0; i< $workarea.length; i++) {
-				console.log('inside loop')
 				var $panel = $('#'+$workarea[i].getAttribute('id'));
 				var type = $panel.attr('data-elem');
 				var id = $panel.attr('id');
@@ -147,16 +147,41 @@ jQuery(document).ready(function($) {
 					'width' : width,
 					'inline' : inline,
 					'id' : id,
+					'parentId' : $panel.parent('ol').attr('id'),
+					'controls' : [],
 				};
-
-				var $controlContainer = $('#'+id).find('>li');
-				for (var j = $controls.length - 1; j >= 0; j--) {
-					$control = 
-				};
-
-				this.jsonObject.work_area.panel.push($panelDef);
+				this.prepareControlJson('#'+id,$panelDef.controls)
+				context.panel.push($panelDef);
 			}
 		},
+
+		prepareControlJson : function(parentId, context) {
+
+			var $controls = $(parentId).find('> li');
+
+			var obj = [];
+
+			for (var i = 0; i< $controls.length; i++) {
+				var $control = $('#'+$controls[i].getAttribute('id'));
+				var type = $control.attr('data-elem');
+				var id = $control.attr('id');
+
+				
+					var $controlDef = {
+						'type' : type,
+						'id' : id,
+						'html' : $control.html(),
+						'value' : $control.text(),
+					};
+					context.push($controlDef);
+			};
+		},
+
+		parseJsonObject : function(obj) {
+			obj.forEach(function(e,i){
+				console.log(e);
+			});
+		}
 
 	};
 
@@ -184,17 +209,28 @@ jQuery(document).ready(function($) {
 		//$item.remove();
 
 		if($parent.children().length == 1) { // IF the control was the last inside the panel den drop the panel also
-			// Asking from user whether to drop the panel control.
-			var $decision = confirm('It is last control. It will drop the panel also. Would you like to drop it ?');
-			if($decision) { // if User select ok then drop the panel
-				// First Removing the Control inside the panel
-				arPanels.removeControl($item.attr('data-elem'),$item.attr('id'));
-				// Then Removing the panel
-				arPanels.removePanel($parent.attr('id'));
-				$parent.remove();
+			if($item.hasClass('placeholder')) {
+				var $decision = confirm("It will drop all controls. Do you want to continue ?");
+				if($decision) {
+					arPanels.removePanel($parent.attr('id'));
+					$parent.remove();
+				} else {
+					;
+				}
 			} else {
-				;
+				// Asking from user whether to drop the panel control.
+				var $decision = confirm('It is last control. It will drop the panel also. Would you like to drop it ?');
+				if($decision) { // if User select ok then drop the panel
+					// First Removing the Control inside the panel
+					arPanels.removeControl($item.attr('data-elem'),$item.attr('id'));
+					// Then Removing the panel
+					arPanels.removePanel($parent.attr('id'));
+					$parent.remove();
+				} else {
+					;
+				}
 			}
+			
 		} else {
 			arPanels.removeControl($item.attr('data-elem'), $item.attr('id'));
 			$item.remove();
@@ -358,7 +394,7 @@ jQuery(document).ready(function($) {
 		// Generates a new Panel Id 
 		var panelId = arPanels.addControl($control.attr('data-elem'));
 	
-			$('<ol class="dynamic-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3></li></ol>').droppable({
+		$p = 	$('<ol class="dynamic-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').droppable({
 				accept: ":not(.ui-sortable-helper) ", //:not('#tool-box-controls > li[data-elem=\"panel\"]')",
 				greedy : true,
 				drop : function(event, ui) {
@@ -371,24 +407,33 @@ jQuery(document).ready(function($) {
 				stop : function(e,ui) {
 					arPanels.renderRightBar();
 		}
-			}).appendTo($context);
+			 })
+			// $item = $('<li data-elem="panel"></li>').append($p);
+			// $item.
+			.appendTo($context);
 	}
 
 	// SHIKHAR CODE
-		$( "#save" ).click(function() {
+		$( "#save" ).click(function(e) {
+			e.preventDefault();
 	  		var htmlString = $( "#dynamic-controls" ).html();
 	  		htmlString = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="assets/css/build-style.css"><header> Page View </header> </head><body>'  + htmlString +'</body></html>';
 	  		htmlString = htmlString.replace('/"','"');
-	  		arPanels.createJsonObject('#dynamic-controls');
+	  		arPanels.createJsonObject(0,'#dynamic-controls', arPanels.jsonObject.work_area);
+	  		var jsonObject = JSON.stringify(arPanels.jsonObject);
 	  		$.ajax({
 	  			type : "POST",
 	  			url : "save.php",
 	  			dataType : "html",
-	  			data : {content : htmlString},
+	  			data : {
+	  				content : htmlString,
+	  				jsonObject : jsonObject,
+	  			},
 	  			success: function(output) {
-	  				//var w = window.open('test.html',"Final Build");
-	  				//w.document.write(output);
-	  			  //	w.document.close();
+	  				//console.log(output);
+	  				var w = window.open('test.html',"Final Build");
+	  				w.document.write(output);
+	  			  	w.document.close();
                   }
 	  		});
 	});

@@ -3,17 +3,12 @@
 <head>
   <meta charset="utf-8">
   <title>jQuery UI Draggable - Default functionality</title>
+  <!-- <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"> -->
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-  <script src="assets/external/jquery/jquery.js"></script>
-  <script src="assets/js/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="assets/js/jquery.ui.touch-punch.min.js"></script>
-  <script>
-	
-	  </script>
 </head>
 <body>
  <div id="header">
- 	<h3>#ResumeBuilder</h3>
+ 	<h3>#ResumeBuilder<a id="save">Finalize</a><h3>
  </div> <!-- HEADER ENDS-->
  <div id="content">
  	<div id="tool-box"  class="box">
@@ -24,9 +19,6 @@
  			<li data-elem="textField"><a href="#">Text Field</a></li>
  			<li data-elem="submitButton"><a href="#">Submit Button</a></li>
  			<li data-elem="panel"><a href="#">Panel</a></li>
- 			<li class = "panel-title">
- 				<input type = "submit" value = "Save Page" class = "save" id = "save">
- 			</li>
  		</ul>
  	</div> <!-- TOOL BOX ENDS -->
 
@@ -52,7 +44,9 @@
   <p><span>&copy;2015 #Resume Builder.</span>&nbsp;All Rights Reserved</p>
  </div>
 
-
+<script src="assets/external/jquery/jquery.js"></script>
+<script src="assets/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="assets/js/dashboard.js"></script>
 </body>
 </html>
