@@ -3,46 +3,51 @@
 <head>
   <meta charset="utf-8">
   <title>jQuery UI Draggable - Default functionality</title>
-  <!-- <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+ <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 <body>
  <div id="header">
- 	<h3>#ResumeBuilder<a id="save">Finalize</a><h3>
+ 	<h3>#ResumeBuilder<div id="save" class="btn btn-success pull-right"><span class="fa fa-floppy-o"></span>&nbsp;Save</button>
+  </div><h3>
  </div> <!-- HEADER ENDS-->
- <div id="content">
- 	<div id="tool-box"  class="box">
- 		<h3><span>Controls<span></h3>
+
+ <div id="content" class="container-fluid">
+ 	<div id="tool-box"  class="box"> <!-- TOOL BOX STARTS -->
+ 		<h3><span class="fa fa-cogs"><span></h3>
  		<ul id="tool-box-controls" class="box-controls">
- 			<li data-elem="heading"><a href="#">Heading</a></li>
- 			<li data-elem="paragraph"><a href="#">Paragraph</a></li>
- 			<li data-elem="textField"><a href="#">Text Field</a></li>
- 			<li data-elem="submitButton"><a href="#">Submit Button</a></li>
- 			<li data-elem="panel"><a href="#">Panel</a></li>
+ 			<li data-elem="heading" data-toggle="tooltip" title="Heading"><a href="#"><img src="assets/images/controls/heading_24x24.png" alt="Heading"></a></li>
+ 			<li data-elem="paragraph" title="Paragraph"><a href="#"><img src="assets/images/controls/paragraph_24x24.png" alt="Paragraph"></a></li>
+ 			<li data-elem="textField" title="Text Field"><a href="#"><img src="assets/images/controls/textField_24x24.png" alt="Text Field"></a></li>
+ 			<li data-elem="submitButton" title="Button"><a href="#"><img src="assets/images/controls/submitButton_24x24.png" alt="Button"></a></li>
+ 			<li data-elem="panel" title="Panel"><a href="#"><img src="assets/images/controls/panel_24x24.png" alt="Panel"></a></li>
  		</ul>
  	</div> <!-- TOOL BOX ENDS -->
 
- 	<div id="work-area" class="box">
- 		
-	 	 <h3><span>Work Area</span></h3>
+
+ 	<div id="work-area" class="box col-md-8">
+ 		 <h3><span>Work Area</span></h3>
 	 		<ol id="dynamic-controls" class="work-area"></ol>
  	</div> <!--WoRK AREA ENDS -->
 
- <div id="rt-panel">
+   <div id="rt-panel-show" class="rt-panel-toggle"><button class="btn btn-default"><span class="fa fa-chevron-left"></span></button></div>
+  <div id="rt-panel-hide" class="rt-panel-toggle"><button class="btn btn-default"><span class="fa fa-chevron-right"></span></button></div>
+ <div id="rt-panel" class="col-md-12">
   <div id="panels" class="box">
-  <h3>Panels Added</h3>
+  <h3>Panels</h3>
       <ul class="items box-controls"><li>No Panels</li></ul>
     </div> <!-- PANELS ENDS -->
     <div id="panel-controls" class="box">
-    <h3>Controls Added</h3>
+    <h3>Controls</h3>
       <ul class="items box-controls" ><li>No Controls</li></ul>
     </div> <!-- PANEL CONTROLS ENDS -->
   </div> <!-- RIGHT PANEL ENDS -->
 
  </div> <!-- CONTENT ENDS -->
- <div id="footer">
+<!--  <div id="footer">
   <p><span>&copy;2015 #Resume Builder.</span>&nbsp;All Rights Reserved</p>
- </div>
+ </div> -->
 
 <script src="assets/external/jquery/jquery.js"></script>
 <script src="assets/js/jquery-ui.min.js"></script>

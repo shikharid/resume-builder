@@ -2,7 +2,7 @@
  body { 
  	margin : 0; 
  	font-family: 'Raleway', sans-serif;
- 	min-width: 1286px;
+ 	min-width: 360px;
  }
  #draggable { 
  	width: 150px; 
@@ -26,8 +26,9 @@
  }
 
 #content {
-
+	position: relative;
 	margin-top: 4em;
+	padding: 10px;
 }
 .box {
 	border: 1px solid #ccc;
@@ -35,11 +36,11 @@
  	padding: 5px;
 }
 #tool-box {
- 	float: left;
+ 	/*float: left;
  	width: 10%;
  	height: 460px;
  	margin: 10px;
- 	min-width: 150px;
+ 	min-width: 150px;*/
 }
 #tool-box h3, #work-area > h3, #panels > h3, #panel-controls > h3 {
 	padding: 10px;
@@ -53,13 +54,53 @@
 	color: #FFF;
 }
 #rt-panel {
+	position: fixed;
+	top: 70px;
+	right: -140px;
  	float: left;
- 	width: 10%;
- 	min-width: 150px;
+ 	margin-left: 5px;
+ 	padding: 0;
+ 	width: 150px;
+
+ }
+ #rt-panel-show {
+ 	right: 5px;
+ }
+ #rt-panel-hide {
+ 	display: none;
+ 	right: 148px;
+ }
+.rt-panel-toggle {
+	top: 15px;
+ 	/*display: none;*/
+ 	position: absolute;
+ 	z-index : 5;
+ 	/*border: 1px solid black;*/
+ 	padding: 0;
+ }
+ .rt-panel-toggle > button {
+ 	border-top-right-radius: 0;
+ 	border-bottom-right-radius: 0;
+ }
+ #panels {
+ 	padding-bottom: 20px;
+ 	width: 100%;
+ 	margin-bottom: 5px;
+ }
+.items {
+	margin-top: 10px;
+ }
+.items > li{
+ 	display: block;
+ 	border: 1px solid #ccc;
+ 	background: #E2E2E2;
+ 	padding: 10px;
+ 	text-align: center;
+ 	position: relative;
+ 	margin-bottom: 5px;
  }
 #panel-controls {
 	padding-bottom: 20px;
- 	margin: 10px;
  	width: 100%;
  }
  #panel-controls > ul > ul {
@@ -77,29 +118,46 @@
  	background: #3b5998 !important;
  	color: #FFF !important;
  }
-#panels {
- 	padding-bottom: 20px;
- 	margin: 10px;
- 	width: 100%;
- 	
- }
-
+#tool-box {
+	background: #F2F2F2;
+	position: absolute;
+	left: 0;
+	top: 10px;
+	padding-bottom: 60px;
+}
+#tool-box > h3 {
+	background: #E2E2E2;
+}
 .box-controls {
 	list-style-type: none;
 	padding: 0;
 }
+#tool-box-controls {
+	margin-top: 10px;
+}
+#tool-box-controls > li {
+	padding: 7px 5px;
+	border-bottom: 1px dashed #ccc;
+}
+#tool-box-controls > li > a{
+	padding: 5px;
+}
+#tool-box-controls > li > a:hover {
+	border-radius: 4px;
+	background: #222;
+}
 .box-controls >li {
- 	display: block;
+ 	/*display: block;
  	border: 1px solid #ccc;
  	background: #E2E2E2;
  	padding: 10px;
  	height: 20px;
  	text-align: center;
  	position: relative;
- 	margin-bottom: 5px;
+ 	margin-bottom: 5px;*/
 }
 .box-controls > li > a {
-	color: #333;
+	/*color: #333;
 	height: 70%;
 	padding-top: 10px;
 	position: absolute;
@@ -107,7 +165,7 @@
 	width: 100%;
 	left: 0;
 
-	text-decoration: none;
+	text-decoration: none;*/
 }
 .box-controols > li > a:hover {
 	text-decoration: none;
@@ -139,39 +197,73 @@
 }
 #work-area {
  	float: left;
- 	width: 70%;
- 	min-height: 360px;
- 	margin: 10px;
- 	min-width: 350px;
+ 	width: 95%;
+ 	margin-left: 50px;
  }
 
-#work-area ol#dynamic-controls {
+#dynamic-controls {
+	margin-top: 10px;
 	padding: 0;
 	display: block;
 	width: 100%;
 	min-height: 360px;
 	padding-bottom: 60px;
 	list-style-type: none;
+	/*border: 1px solid black;*/
 }
-#work-area ol > li:hover {
-	/*background: #F2F2F2;
-*/}
-#work-area ol#dynamic-controls >li {
-	padding: 5px;
-	display: block;
+#dynamic-controls >li {
+/*	display: block;
 	border: 1px dashed #ccc;
 	margin-bottom: 10px;
-	position: relative;
+	position: relative;*/
 }
-#work-area ol.dynamic-controls > li > input {
+#work-area .dynamic-panel {
+	list-style-type: none;
+	border: 1px solid #ccc;
+	display : block;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+#work-area .dynamic-panel > li {
+	position: relative;
+	border: 1px dashed #ccc;
+	margin-bottom: 15px;
+	min-height: 50px;
+	padding: 5px;
+}
+#work-area .dynamic-panel > li > input {
 	padding: 5px;
 	color: #222;
+}
+#work-area .dynamic-panel > li:last-child {
+	margin-bottom: 1em;
 }
 #work-area ol> li[data-elem="paragraph"]{
 	font-size: 0.9em;
 	padding: 2px;
 }
-
+.control-action {
+	list-style-type: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0;
+	margin: 0;
+	border-left: 1px solid #ccc;
+	height: 100%;
+}
+.control-action > li {
+	cursor: pointer;
+	padding: 3px;
+	height: 50%;
+	border-bottom: 1px dashed #ccc;
+}
+.control-action > li:last-child {
+	border-bottom: none;
+}
+.control-action > li:hover {
+	background: #3b5998;
+}
 .panel {
 	height: 30%;
 }
@@ -179,23 +271,6 @@
 .notice-text {
 	color: #999999;
 	font-size: 0.8em;
-}
-
-.dynamic-panel {
-	list-style-type: none;
-
-	border: 1px solid #ccc;
-	display : block;
-	padding: 5px;
-	margin-bottom: 5px;
-}
-.dynamic-panel > li{
-	position: relative;
-	border: 1px dashed #ccc;
-	margin-bottom: 15px;
-}
-.dynamic-panel > li:last-child {
-	margin-bottom: 30px;
 }
 
 .trash {
@@ -238,12 +313,41 @@
 }
 
 #save {
-	float: right;
-	font-size: 0.9em;
-	background: #3b5998;
-	padding: 7px 12px;
-	border-radius: 4px;
-	margin-right: 2%;
-	cursor: pointer;;
-	border: 1px solid #222;
+	margin-right: 10px;
+	font-weight: bold;
+}
+#edit-control {
+
+}
+#edit-control button {
+	margin-left: 10px;
+}
+@media (max-width: 480px)  {
+	#work-area {
+		/*border : 1px solid red;*/
+		width: 90%;
+		margin-right: 20px;
+	}
+}
+
+@media (min-width: 481px ) and (max-width: 768px) {
+	#work-area {
+		/*border : 1px solid yellow;*/
+		width: 90%;
+
+	}
+}
+@media (min-width: 769px ) and (max-width: 992px) {
+	#work-area {
+		/*border : 1px solid green;*/
+		width: 92%;
+
+	}
+}
+@media (min-width: 993px ) and (max-width: 1280px) {
+	#work-area {
+		/*border : 1px solid blue;*/
+		width: 95%;
+
+	}
 }

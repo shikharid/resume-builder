@@ -1,5 +1,5 @@
+
 jQuery(document).ready(function($) {
-	
 
 	var oldval;
 
@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
 					var panelId = $a[0].id;
 					var $obj = $('#'+$a[0].id);
 					var $controls  = $obj.children('li');
-					$c = $('<ul id="panel-control-'+panelId+'" class="items box-controls"><li class="panel-title"><span>#panel-'+panelId+' Controls</span></li></ul>');
+					$c = $('<ul id="panel-control-'+panelId+'" class="items box-controls"><li class="panel-title"><span>#panel-'+panelId+'</span></li></ul>');
 					if($controls.length ==1 && $controls[0].getAttribute('data-elem')=="No Controls") {
 						$d = $c.append('<li>No Controls</li>');
 					} else {
@@ -201,9 +201,93 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 	});
 
+	$work_area.on('click','.control-action > li', function(event) {
+		var action = $(this).attr('data-action');
+		var targetId = $(this).attr('data-target');
+
+		switch(action) {
+			case 'delete' : removeControl($(targetId));
+			break;
+			case 'edit' : editControl($(targetId));
+			break;
+			default : 
+			break;
+		}
+		//$(targetId).remove();
+	});
+
+
 	// Event for Removing Panels/Controls
 	$work_area.on('click', '.trash', function(event) {
 		var $item = $(this).closest('li');
+		removeControl($item);
+	});
+
+	function editControl(item){
+		var $item = item;
+		var type = $item.attr('data-elem');
+		var value = '';
+		var target = '#'+$item.attr('id');
+
+		switch(type) {
+			case 'heading' : value = $item.text();
+			break;
+			case 'paragraph' : value = $item.text();
+			break;
+			case 'textField' : value = $item.val();
+			break;
+			case 'submitButton' : value = $item.val();
+			break;
+		}
+		var a = '<div id="edit-control">Value <input type="text" value="" data-oldvalue="'+value+'" class="input" id="edit-control-field">&nbsp;<button type="button" data-action="edit-ok" data-target="'+target+'" class="btn btn-sm btn-success">Ok</button><button type="button" data-action="edit-cancel"  data-target="'+target+'" class="btn btn-sm btn-default">Cancel</button></div></div>';
+
+		$item.html(a);
+	}
+
+	$('#work-area').on('click','#edit-control button',function(event) {
+		console.log('button-clicked');
+		var action  = $(this).attr('data-action');
+		var targetId = $(this).attr('data-target');
+		var $target = $(targetId);
+		var type = $target.attr('data-elem');
+		var newval = $('#edit-control-field').val();
+		var oldval = $('#edit-control-field').attr('data-oldvalue');
+
+		switch(action) {
+			case 'edit-ok' : if(newval=="") {
+				alert('Cannot be Blank.');
+				newval = oldval;
+			}
+			break;
+			case 'edit-cancel' : newval = oldval;
+			break;
+			default: 
+			break;
+		}
+
+		switch(type) {
+				case 'heading' : 
+					$target.html('<h3>'+newval+'</h3><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
+					break;
+				case 'paragraph': 
+					$target.html('<p>'+newval+'</p><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul></span>');
+					break;
+				case 'textField' : 
+					$target.html('<input type="text" value="'+newval+'"/><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
+					break;
+				case 'submitButton' : 
+					$target.html('<input type="submit" value="'+newval+'"/><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
+					break;
+				default : 
+					break;
+
+		}
+		$('#edit-control').remove();
+	}); 
+
+	function removeControl(item){
+		//var $item = $(this).closest('li');
+		var $item = item;
 		var $parent = $item.parent('.dynamic-panel');
 
 		//$item.remove();
@@ -236,63 +320,15 @@ jQuery(document).ready(function($) {
 			$item.remove();
 		}
 		arPanels.renderRightBar();
-	});
-	$work_area.on('dblclick','ol > li',function() {
-
-		var $elem = $(this);
-
-		if($elem.hasClass('placeholder')){
-			return ;
-		}
-
-		var type = $elem.attr('data-elem');
-
-		if(type=="submitButton" || type == "textField") {
-			oldval = $elem.val();
-		}
-		else {
-			oldval = $elem.text();
-		}
-
-			$elem.html('<input type="text" placeholder="Enter '+type+' text" class="edit-data" placeholder=""/>').find('input').focus();
-	});
-
-	$('#work-area').on('focusout','input',function() {
-			var newval = $(this).val();
-			var closestelem;
-
-			closestelem = $(this).closest('li');
-			if(newval=="")
-				newval = oldval;
-
-			var elemType = closestelem.attr('data-elem');
-
-			switch(elemType) {
-				case 'heading' : 
-					closestelem.html('<h3>'+newval+'</h3><span class="trash"></span>');
-					break;
-				case 'paragraph': 
-					closestelem.html('<p>'+newval+'</p><span class="trash"></span>');
-					break;
-				case 'textField' : 
-					closestelem.html('<input type="text" value="'+newval+'"/><span class="trash"></span>');
-					break;
-				case 'submitButton' : 
-					closestelem.html('<input type="submit" value="'+newval+'"/><span class="trash"></span>');
-					break;
-				default : 
-					break;
-
-			}
-		});
-
-	
+}	
 	// Items present in tool box is draggable
 	$("li", $tool_box_controls).draggable({
 		revert : "invalid",
-		 helper : function() {
-		 	return '<div class="helper-control">'+$(this).text()+'</div>';
-		 },
+		 helper :"clone",
+		 opacity : "0.7",
+		 zIndex : "4", //function() {
+		 //	return '<div class="helper-control">'+$(this).text()+'</div>';
+		// },
 		 cursor : "move"
 
 	});
@@ -362,7 +398,9 @@ jQuery(document).ready(function($) {
 	function addHeading($control, $context) {
 
 		var headingId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="heading" id="heading-'+headingId+'"><h3>Heading <span class="notice-text">(Double click to change)</span></h3><span class="trash"></span></li>');
+		var $data = $('<li data-elem="heading" id="heading-'+headingId+'"><h3>Heading</h3>'+
+			'<ul class="control-action"><li data-action="edit" data-target="#heading-'+headingId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#heading-'+headingId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>');
 
 		//arPanels.addHeading($context,$data);
 		$data.appendTo($context);
@@ -371,21 +409,27 @@ jQuery(document).ready(function($) {
 
 	function addParagraph($control, $context) {
 		var paragraphId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="paragraph" id="paragraph-'+paragraphId+'"><p>Paragraph <span class="notice-text">(Double click to change)</span></p><span class="trash"></span></li>');
+		var $data = $('<li data-elem="paragraph" id="paragraph-'+paragraphId+'"><p>Paragraph</p>'+
+			'<ul class="control-action"><li data-action="edit" data-target="#paragraph-'+paragraphId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#paragraph-'+paragraphId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>');
 		$data.appendTo($context);
 		arPanels.activatePanel($context.attr('id'));
 	}
 
 	function addTextField($control, $context) {
 		var textFieldId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="textField" id="textField-'+textFieldId+'"><input type="text" placeholder="Enter Value"><span class="trash"></span></li>');
+		var $data = $('<li data-elem="textField" id="textField-'+textFieldId+'"><input type="text" placeholder="Enter Value" class="input ">'+
+			'<ul class="control-action"><li data-action="edit" data-target="#textField-'+textFieldId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#textField-'+textFieldId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>');
 		$data.appendTo($context);
 		arPanels.activatePanel($context.attr('id'));
 	}
 
 	function addSubmitButton($control, $context) {
 		var submitButtonId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="'+$control.attr('data-elem')+'" id="submitButton-'+submitButtonId+'"><input type="submit" value="Button"><span class="trash"></span></li>');
+		var $data = $('<li data-elem="'+$control.attr('data-elem')+'" id="submitButton-'+submitButtonId+'"><input type="submit" value="Button">'+
+			'<ul class="control-action"><li data-action="edit" data-target="#submitButton-'+submitButtonId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#submitButton-'+submitButtonId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>');
 		$data.appendTo($context);
 		arPanels.activatePanel($context.attr('id'));
 	}
@@ -408,17 +452,16 @@ jQuery(document).ready(function($) {
 					arPanels.renderRightBar();
 		}
 			 })
-			// $item = $('<li data-elem="panel"></li>').append($p);
-			// $item.
 			.appendTo($context);
 	}
 
-	// SHIKHAR CODE
 		$( "#save" ).click(function(e) {
 			e.preventDefault();
-	  		var htmlString = $( "#dynamic-controls" ).html();
-	  		htmlString = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="assets/css/build-style.css"><header> Page View </header> </head><body>'  + htmlString +'</body></html>';
-	  		htmlString = htmlString.replace('/"','"');
+	  		var $htmlString = $( "#dynamic-controls" ).clone();
+	  		$htmlString.find('.control-action').remove();
+	  		var s = $htmlString.html();
+	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="assets/css/build-style.css"></head><body><h2>Your Page</h2>'  + s +'</body></html>';
+	  		s = s.replace('/"','"');
 	  		arPanels.createJsonObject(0,'#dynamic-controls', arPanels.jsonObject.work_area);
 	  		var jsonObject = JSON.stringify(arPanels.jsonObject);
 	  		$.ajax({
@@ -426,7 +469,7 @@ jQuery(document).ready(function($) {
 	  			url : "save.php",
 	  			dataType : "html",
 	  			data : {
-	  				content : htmlString,
+	  				content : s,
 	  				jsonObject : jsonObject,
 	  			},
 	  			success: function(output) {
@@ -437,4 +480,44 @@ jQuery(document).ready(function($) {
                   }
 	  		});
 	});
+
+	$('#rt-panel-hide').on('click', function(event) {
+		$('#rt-panel').css({
+			'right' : '-140px'
+		});
+		$(this).hide();
+		$('#rt-panel-show').show();
+	});
+	$('#rt-panel-show').on('click', function(event) {
+		$('#rt-panel').css({
+			'right' : '0',
+		})
+		$(this).hide();
+		$('#rt-panel-hide').show();
+		/* Act on the event */
+	});
+	$('#rt-panel-toggle').on('click', function(event) {
+		$('#rt-panel').fadeIn();
+		$(this).hide();
+		/* Act on the event */
+	});
+	$(window).resize(function(event) {
+		h = $(window).height();
+		w = $(window).width();
+
+		if(w < 480 ) {
+			$('#rt-panel').css({
+				'right' : '-140px',
+			});
+			$('#rt-panel-show').show();
+			$('#rt-panel-hide').hide();
+		}
+
+		// if(w > 640) {
+		// 	$('#rt-panel').show();
+		// 	$('#rt-panel-show').hide();
+		// 	$('#rt-panel-hide').show();
+		// }
+	});
+
 });
