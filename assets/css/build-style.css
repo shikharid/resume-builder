@@ -1,93 +1,36 @@
  @import url(http://fonts.googleapis.com/css?family=Raleway);
  body { 
  	margin : 0; 
+ 	padding: 0;
  	font-family: 'Raleway', sans-serif;
- 	min-width: 1286px;
  }
  #header { 
+ 	margin: 0;
  	height: 60px; 
  	background: #222; 
  	color: #FFF;
  }
- #header h3{ 
- 	padding: 15px 0 0 0; 
- 	margin: 0; 
+ #header h2{ 
+ 	margin: 0;
+ 	padding-top: 15px; 
  	text-align: center;
+ 	color: #FFF;
  }
 
 #content {
-	/*margin-top: 4em;*/
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 10px;
 }
-.box {
- 	background: #F2F2F2;
- 	padding: 5px;
-}
-#work-area {
- 	float: left;
- 	width: 70%;
- 	height: 560px;
- 	margin: 10px;
- 	min-width: 350px;
- }
-
-.box-controls {
-	list-style-type: none;
-	padding: 0;
-}
-.box-controls > li > a {
-	color: #333;
-	height: 70%;
-	padding-top: 10px;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	left: 0;
-
-	text-decoration: none;
-}
-.box-controols > li > a:hover {
-	text-decoration: none;
-	color: #222;
-}
-.box-controls > li > .selected:hover {
-	color: #FFF;
-}
-
-.top-controls {
-	padding-bottom: 20px;
-
-}
-.top-controls ul {
-	list-style-type: none;
-	padding: 0;
-	margin : 0;
-	float: right;
-}
-.top-controls ul > li {
-	display: inline;
-	cursor: pointer;
-
-}
-.panel {
-	height: 30%;
-}
-
-.notice-text {
-	color: #999999;
-	font-size: 0.8em;
-}
-
 .dynamic-panel {
 	list-style-type: none;
-	margin-left: 20px;
-	margin-right: 20px;
+	padding: 5px;
 	display : block;
-	padding: 20px;
 	margin-bottom: 5px;
+	border : 1px solid #ccc;
 }
 .dynamic-panel > li{
 	position: relative;
-	margin-bottom: 15px;
 }
 .dynamic-panel > li:last-child {
 	margin-bottom: 30px;

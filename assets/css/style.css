@@ -2,7 +2,7 @@
  body { 
  	margin : 0; 
  	font-family: 'Raleway', sans-serif;
- 	min-width: 360px;
+ 	min-width: 460px;
  }
  #draggable { 
  	width: 150px; 
@@ -71,9 +71,9 @@
  	right: 148px;
  }
 .rt-panel-toggle {
-	top: 15px;
+	top: 75px;
  	/*display: none;*/
- 	position: absolute;
+ 	position: fixed;
  	z-index : 5;
  	/*border: 1px solid black;*/
  	padding: 0;
@@ -146,27 +146,6 @@
 	border-radius: 4px;
 	background: #222;
 }
-.box-controls >li {
- 	/*display: block;
- 	border: 1px solid #ccc;
- 	background: #E2E2E2;
- 	padding: 10px;
- 	height: 20px;
- 	text-align: center;
- 	position: relative;
- 	margin-bottom: 5px;*/
-}
-.box-controls > li > a {
-	/*color: #333;
-	height: 70%;
-	padding-top: 10px;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	left: 0;
-
-	text-decoration: none;*/
-}
 .box-controols > li > a:hover {
 	text-decoration: none;
 	color: #222;
@@ -230,6 +209,7 @@
 	margin-bottom: 15px;
 	min-height: 50px;
 	padding: 5px;
+	padding-right: 25px;
 }
 #work-area .dynamic-panel > li > input {
 	padding: 5px;
@@ -238,10 +218,7 @@
 #work-area .dynamic-panel > li:last-child {
 	margin-bottom: 1em;
 }
-#work-area ol> li[data-elem="paragraph"]{
-	font-size: 0.9em;
-	padding: 2px;
-}
+
 .control-action {
 	list-style-type: none;
 	position: absolute;
@@ -313,13 +290,19 @@
 }
 
 #save {
+	position: absolute;
+	right: 10px;
+	top: 15px;
 	margin-right: 10px;
 	font-weight: bold;
 }
-#edit-control {
-
+.edit-control {
 }
-#edit-control button {
+.edit-control > .edit-control-field {
+	width: 30%;
+	display: inline;
+}
+.edit-control button {
 	margin-left: 10px;
 }
 @media (max-width: 480px)  {

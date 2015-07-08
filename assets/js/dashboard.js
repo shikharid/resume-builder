@@ -239,19 +239,20 @@ jQuery(document).ready(function($) {
 			case 'submitButton' : value = $item.val();
 			break;
 		}
-		var a = '<div id="edit-control">Value <input type="text" value="" data-oldvalue="'+value+'" class="input" id="edit-control-field">&nbsp;<button type="button" data-action="edit-ok" data-target="'+target+'" class="btn btn-sm btn-success">Ok</button><button type="button" data-action="edit-cancel"  data-target="'+target+'" class="btn btn-sm btn-default">Cancel</button></div></div>';
-
+		var a = '<div class="edit-control"><b>Value&nbsp;</b>&nbsp;<input type="text" value="'+value+'" data-oldvalue="'+value+'" class="form-control edit-control-field">&nbsp;<button type="button" data-action="edit-ok" data-target="'+target+'" class="btn btn-sm btn-success">Ok</button><button type="button" data-action="edit-cancel"  data-target="'+target+'" class="btn btn-sm btn-default">Cancel</button></div></div>';
 		$item.html(a);
+		$item.find('input:text').select().focus(); //focus(function() { $item.find('input:text').select(); });
 	}
 
-	$('#work-area').on('click','#edit-control button',function(event) {
-		console.log('button-clicked');
+	$work_area.on('click','.edit-control button',function(event) {
 		var action  = $(this).attr('data-action');
 		var targetId = $(this).attr('data-target');
 		var $target = $(targetId);
+		var $editControl = $target.find('.edit-control');
+		var $editField = $editControl.find('>.edit-control-field');
 		var type = $target.attr('data-elem');
-		var newval = $('#edit-control-field').val();
-		var oldval = $('#edit-control-field').attr('data-oldvalue');
+		var newval = $editField.val();
+		var oldval = $editField.attr('data-oldvalue');
 
 		switch(action) {
 			case 'edit-ok' : if(newval=="") {
@@ -282,7 +283,7 @@ jQuery(document).ready(function($) {
 					break;
 
 		}
-		$('#edit-control').remove();
+		$editControl.remove();
 	}); 
 
 	function removeControl(item){
@@ -459,8 +460,9 @@ jQuery(document).ready(function($) {
 			e.preventDefault();
 	  		var $htmlString = $( "#dynamic-controls" ).clone();
 	  		$htmlString.find('.control-action').remove();
+	  		$htmlString.find('.edit-control').remove();
 	  		var s = $htmlString.html();
-	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="assets/css/build-style.css"></head><body><h2>Your Page</h2>'  + s +'</body></html>';
+	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="assets/css/build-style.css"></head><body><div id="header"><h2>#ResumeBuilder</h2></div><div id="content">'  + s +'</div></body></html>';
 	  		s = s.replace('/"','"');
 	  		arPanels.createJsonObject(0,'#dynamic-controls', arPanels.jsonObject.work_area);
 	  		var jsonObject = JSON.stringify(arPanels.jsonObject);
