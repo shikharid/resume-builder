@@ -35,6 +35,10 @@
 .dynamic-panel > li:last-child {
 	margin-bottom: 30px;
 }
-
+.sub-panel{
+	display: inline-block;
+	padding:3px 3px 3px 3px;
+	margin: 3px 3px 3px 3px;
+}
 
 
