@@ -218,6 +218,12 @@
 #work-area .dynamic-panel > li:last-child {
 	margin-bottom: 1em;
 }
+#work-area .sub-panel{
+	display: inline-block;
+	margin-right: 2px;
+	min-width: 150px;
+	min-height: 50px;
+}
 
 .control-action {
 	list-style-type: none;
