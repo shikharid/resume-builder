@@ -290,11 +290,10 @@ jQuery(document).ready(function($) {
 		//var $item = $(this).closest('li');
 		var $item = item;
 		var $parent = $item.parent('.dynamic-panel');
-
 		//$item.remove();
+		if($parent.children().length == 1 || ($parent.hasClass('sub-panel') == true && $parent.children().length <= 2)) { // IF the control was the last inside the panel den drop the panel also
+			if($item.hasClass('placeholder') || $item.hasClass('sub-panel')) {
 
-		if($parent.children().length == 1) { // IF the control was the last inside the panel den drop the panel also
-			if($item.hasClass('placeholder')) {
 				var $decision = confirm("It will drop all controls. Do you want to continue ?");
 				if($decision) {
 					arPanels.removePanel($parent.attr('id'));
@@ -314,12 +313,17 @@ jQuery(document).ready(function($) {
 				} else {
 					;
 				}
+
+				
 			}
 			
 		} else {
+
 			arPanels.removeControl($item.attr('data-elem'), $item.attr('id'));
+
 			$item.remove();
 		}
+
 		arPanels.renderRightBar();
 }	
 	// Items present in tool box is draggable
@@ -437,25 +441,54 @@ jQuery(document).ready(function($) {
 	function addPanel($control,$context) {
 
 		// Generates a new Panel Id 
-		var panelId = arPanels.addControl($control.attr('data-elem'));
-	
-		$p = 	$('<ol class="dynamic-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').droppable({
-				accept: ":not(.ui-sortable-helper) ", //:not('#tool-box-controls > li[data-elem=\"panel\"]')",
-				greedy : true,
-				drop : function(event, ui) {
-					$(this).find('.placeholder').remove();
-					addControl(ui.draggable, $(this));
-				}
-			}).sortable({
-				containment : "document",
-				cursor : "move",
-				stop : function(e,ui) {
-					arPanels.renderRightBar();
+		
+		var parentType = $context.attr('data-elem');
+		if(parentType == 'panel'){
+			addSubPanel($control,$context);
 		}
-			 })
-			.appendTo($context);
-	}
+		else {
+		var panelId = arPanels.addControl($control.attr('data-elem'));
+		$p = 	$('<ol class="dynamic-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').droppable({
+					accept: ":not(.ui-sortable-helper) ", //:not('#tool-box-controls > li[data-elem=\"panel\"]')",
+					greedy : true,
+					drop : function(event, ui) {
+						$(this).find('.placeholder').remove();
+						addControl(ui.draggable, $(this));
 
+					}
+				}).sortable({
+					containment : "document",
+					cursor : "move",
+					stop : function(e,ui) {
+						arPanels.renderRightBar();
+			}
+				 })
+				.appendTo($context);
+		}
+
+	}
+	function addSubPanel($control,$context){
+		var panelId = arPanels.addControl($control.attr('data-elem'));
+		$p = $('<ol class="dynamic-panel sub-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').resizable({
+				handles:'e',
+        		containment:"parent",
+		}).droppable({
+					accept: ":not(.ui-sortable-helper) ", //:not('#tool-box-controls > li[data-elem=\"panel\"]')",
+					greedy : true,
+					drop : function(event, ui) {
+						$(this).find('.placeholder').remove();
+						addControl(ui.draggable, $(this));
+
+					}
+				}).sortable({
+					containment : "document",
+					cursor : "move",
+					stop : function(e,ui) {
+						arPanels.renderRightBar();
+			}
+				 })
+				.appendTo($context);
+	}
 		$( "#save" ).click(function(e) {
 			e.preventDefault();
 	  		var $htmlString = $( "#dynamic-controls" ).clone();
@@ -476,11 +509,13 @@ jQuery(document).ready(function($) {
 	  			},
 	  			success: function(output) {
 	  				//console.log(output);
-	  				var w = window.open('test.html',"Final Build");
+	  				var w = window.open('resumebuild.html',"Final Build");
 	  				w.document.write(output);
 	  			  	w.document.close();
                   }
 	  		});
+	  	$(panelIdControl).addClass('sub-panel');
+		$(panelIdControl).addClass('ui-widget-content');
 	});
 
 	$('#rt-panel-hide').on('click', function(event) {
