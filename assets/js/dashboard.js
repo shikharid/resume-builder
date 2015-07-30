@@ -495,27 +495,48 @@ jQuery(document).ready(function($) {
 	  		$htmlString.find('.control-action').remove();
 	  		$htmlString.find('.edit-control').remove();
 	  		var s = $htmlString.html();
-	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="assets/css/build-style.css"></head><body><div id="header"><h2>#ResumeBuilder</h2></div><div id="content">'  + s +'</div></body></html>';
+	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="../assets/css/build-style.css"></head><body><div id="header"><h2>#ResumeBuilder</h2></div><div id="content">'  + s +'</div><script type="text/javascript" src="../assets/external/jquery/jquery.js"></script><script type="text/javascript" src="../assets/js/form.js"></script></body></html>';
 	  		s = s.replace('/"','"');
 	  		arPanels.createJsonObject(0,'#dynamic-controls', arPanels.jsonObject.work_area);
 	  		var jsonObject = JSON.stringify(arPanels.jsonObject);
 	  		$.ajax({
-	  			type : "POST",
-	  			url : "save.php",
-	  			dataType : "html",
+	  			url: 'save.php',
+	  			type: 'POST',
 	  			data : {
 	  				content : s,
 	  				jsonObject : jsonObject,
 	  			},
-	  			success: function(output) {
-	  				//console.log(output);
-	  				var w = window.open('resumebuild.html',"Final Build");
-	  				w.document.write(output);
-	  			  	w.document.close();
-                  }
+	  		})
+	  		.done(function(data) {
+	  			data = $.parseJSON(data);
+	  			console.log(data);
+	  			window.open(data.file,"Final Build");
+	  			console.log("success");
+	  		})
+	  		.fail(function(data) {
+	  			console.log("error");
+	  			console.log(data);
+	  		})
+	  		.always(function() {
+	  			console.log("complete");
 	  		});
-	  	$(panelIdControl).addClass('sub-panel');
-		$(panelIdControl).addClass('ui-widget-content');
+	  		
+	  		// $.ajax({
+	  		// 	type : "POST",
+	  		// 	url : "save.php",
+	  		// 	data : {
+	  		// 		content : s,
+	  		// 		jsonObject : jsonObject,
+	  		// 	},
+	  		// 	success: function(data) {
+	  		// 		data = $.parseJSON(data);
+	  		// 		console.log(data);
+	  		// 		 window.open(data.file,"Final Build");
+     //              }
+	  		// });
+
+	  	//$(panelIdControl).addClass('sub-panel');
+		//$(panelIdControl).addClass('ui-widget-content');
 	});
 
 	$('#rt-panel-hide').on('click', function(event) {
