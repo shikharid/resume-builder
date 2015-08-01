@@ -32,9 +32,9 @@
 
 ##-------------- DATABASE CREDENTIALS ---------------##
 
-	define("DB_DATABASE", "altwarei_interns");
-	define("DB_USER","altwarei_ashif");
-	define("DB_PASS", "Int3rn2015s");
+	define("DB_DATABASE", "altwarei_builder");
+	define("DB_USER","altwarei_resume");
+	define("DB_PASS", "Altware@2015");
 	define("DB_HOST", "altwareindia.com");
 
 

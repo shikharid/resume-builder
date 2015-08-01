@@ -42,6 +42,7 @@ jQuery(document).ready(function($) {
 		})
 		.done(function(data) {
 			data = $.parseJSON(data);
+			alert('Entry Added Successfully');
 			console.log(data);
 		})
 		.fail(function() {
