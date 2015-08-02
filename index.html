@@ -6,12 +6,16 @@
   <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
  <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" type = "text/css" href="assets/css/jquery-ui.css">
 
 <script src="assets/external/jquery/jquery.js"></script>
 <script src="assets/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="assets/js/jquery.ui.touch-punch.min.js"></script>
 <script type="text/javascript" src="assets/js/dashboard.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script>
+  $('li[data-elem = "image"').draggable();
+</script>
 </head>
 <body>
  <div id="header">
@@ -19,14 +23,23 @@
   </div><h3>
  </div> <!-- HEADER ENDS-->
 
+
  <div id="content" class="container-fluid">
  	<div id="tool-box"  class="box"> <!-- TOOL BOX STARTS -->
  		<h3><span class="fa fa-cogs"><span></h3>
  		<ul id="tool-box-controls" class="box-controls">
- 			<li data-elem="heading" data-toggle="tooltip" title="Heading"><a href="#"><img src="assets/images/controls/heading_24x24.png" alt="Heading"></a></li>
- 			<li data-elem="paragraph" title="Paragraph"><a href="#"><img src="assets/images/controls/paragraph_24x24.png" alt="Paragraph"></a></li>
- 			<li data-elem="textField" title="Text Field"><a href="#"><img src="assets/images/controls/textField_24x24.png" alt="Text Field"></a></li>
- 			<li data-elem="submitButton" title="Button"><a href="#"><img src="assets/images/controls/submitButton_24x24.png" alt="Button"></a></li>
+ 			<li data-elem="heading" data-size = "6" data-toggle="tooltip" title="Heading"><a href="#"><span class = "fa fa-header" alt = "Heading-6" style="font-size:1.2em; color:#132313;"> </span></a></li>
+      <li data-elem="heading" data-size = "5" data-toggle="tooltip" title="Heading"><a href="#"><span class = "fa fa-header" alt = "Heading-5" style="font-size:1.35em; color:#132313;"> </span></a></li>
+      <li data-elem="heading" data-size = "4" data-toggle="tooltip" title="Heading"><a href="#"><span class = "fa fa-header" alt = "Heading-4" style="font-size:1.50em; color:#132313;"> </span></a></li>
+      <li data-elem="heading" data-size = "3" data-toggle="tooltip" title="Heading"><a href="#"><span class = "fa fa-header" alt = "Heading-3" style="font-size:1.65em; color:#132313;"> </span></a></li>
+      <li data-elem="heading" data-size = "2" data-toggle="tooltip" title="Heading"><a href="#"><span class = "fa fa-header" alt = "Heading-2" style="font-size:1.90em; color:#132313;"> </span></a></li>
+      <li data-elem="heading" data-size = "1" data-toggle="tooltip" title="Heading"><a href="#"><span class = "fa fa-header" alt = "Heading-1" style="font-size:2.10em; color:#132313;"> </span></a></li>
+ 			<li data-elem="paragraph" title="Paragraph"><a href="#"><span class = "fa fa-paragraph" style="font-size:1.7em; color:#132313;"> </span></a></li>
+      <li data-elem="hr" title="Horizontal Line"><a href="#"><span class = "fa fa-arrows-h" style="font-size:2.10em; color:#132313;"></a></li>
+      <li data-elem="image" title="Image"><a href="#"><span class = "fa fa-picture-o" style="font-size:1.7em; color:#132313;" alt = "Image"> </span></a></li>
+      <li data-elem="table" title="Table"><a href="#"><span class = "fa fa-table" style="font-size:1.7em; color:#132313;" alt = "Table"> </span></a></li>
+      <li data-elem="list" title="Ordered List" data-type = "ol"><a href="#"><span class = "fa fa-list-ol" style="font-size:1.4em; color:#132313;" alt = "Ordered List"> </span></a></li>
+      <li data-elem="list" title="Unordered List" data-type = "ul"><a href="#"><span class = "fa fa-list-ul" style="font-size:1.4em; color:#132313;" alt = "Unordered List"> </span></a></li>
  			<li data-elem="panel" title="Panel"><a href="#"><img src="assets/images/controls/panel_24x24.png" alt="Panel"></a></li>
  		</ul>
  	</div> <!-- TOOL BOX ENDS -->
