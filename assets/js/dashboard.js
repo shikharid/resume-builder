@@ -1,21 +1,35 @@
 
 jQuery(document).ready(function($) {
-
+	$(".placeholder").draggable('destroy');
 	var oldval;
 
 	var arPanels  = {
 		'panelCount' : 0,
+		'subPanel' : [],
 		'panel' : [], 			// Array holding ID's of the panels added to work area
 		'heading' : [], 		// Array holding ID's of headings added inside the panel
 		'paragraph' : [], 		// Array holding ID's of paragraphs added inside panel
-		'textField' : [], 		// Array holding ID's of text Fields added inside panel
-		'submitButton' : [], 	// Array holding Id's of submit button added inside panel
+		'hr' : [],
+		'image': [],
+		'table': [],
+		'list': [],
 		'activePanel' : null, 	// Variable holding the ID of currently selected panel
 		'jsonObject' : {
 			'work_area' : {
 				'panel' : [],
 			},
 		},
+		'Panels'  : [{			// Array holding 
+			'subPanel' : [],
+			'panel' : [], 			// Array holding ID's of the panels added to work area
+			'hr' : [],
+			'image' : [],
+			'table' : [],
+			'list' : [],
+			'heading' : [], 		// Array holding ID's of headings added inside the panel
+			'paragraph' : [], 		// Array holding ID's of paragraphs added inside panel
+		}],
+	
 
 		/*
 			function addControl
@@ -25,16 +39,33 @@ jQuery(document).ready(function($) {
 			return values
 				- Returns the Id of control generated according to the values in the corresponding control array
 		*/
-		addControl : function(controlType) {
-			var controlId;
+		addControl : function(parentId,controlType) {
+			var controlId,localId;
 			if(this[controlType].length == 0){
 				controlId = 1;
 			} else {
 				controlId = Math.max.apply(Math,this[controlType])+1;
 			}
-			
 			this[controlType].push(controlId);
-			return controlId;
+			if(controlType == 'panel'){
+				return controlId;
+			}
+			else{
+				if(this['Panels'] == undefined){
+					this['Panels'][1] = new Object(); 
+				}
+				if(this['Panels'][parentId] == undefined){
+					this['Panels'][parentId] = new Object();
+				}
+				if(this['Panels'][parentId][controlType] == undefined){
+					this['Panels'][parentId][controlType] = new Array();
+					localId = 1;
+				}
+				else 
+					localId = Math.max.apply(Math, this['Panels'][parentId][controlType]) + 1;
+				this['Panels'][parentId][controlType].push(localId);
+			}
+			return localId;
 		},
 
 		/*
@@ -141,7 +172,10 @@ jQuery(document).ready(function($) {
 				var id = $panel.attr('id');
 				var width = $panel.width() / $panel.parent('ol').width() * 100;
 				var inline = ((/inline/).test($panel.css('display')))?true:false;
-
+				var emptyCheck = '#placeholder'+$(this).attr('id');
+				if($panel.find(emptyCheck).length == 0){
+					continue;
+				}
 				var $panelDef = {
 					'type' : type,
 					'width' : width,
@@ -204,14 +238,17 @@ jQuery(document).ready(function($) {
 	$work_area.on('click','.control-action > li', function(event) {
 		var action = $(this).attr('data-action');
 		var targetId = $(this).attr('data-target');
-
 		switch(action) {
 			case 'delete' : removeControl($(targetId));
-			break;
+				break;
 			case 'edit' : editControl($(targetId));
-			break;
-			default : 
-			break;
+				break;
+			case 'add' : addElement($(targetId));
+				break;
+			case 'load' : loadImage($(targetId));
+				break;
+			default:
+			    break;
 		}
 		//$(targetId).remove();
 	});
@@ -222,28 +259,94 @@ jQuery(document).ready(function($) {
 		var $item = $(this).closest('li');
 		removeControl($item);
 	});
-
+	function loadImage(item){
+		var $item = item;
+		var target = '#' + $item.attr('id');
+		var value = $item.find('img').attr('src');
+		var oldHtml = $item.html();
+		var a = "<div class='load-control'><b>Value&nbsp;</b>&nbsp;<input type='file' value='"+value+"' data-oldhtml = '"+oldHtml+"' data-oldvalue='"+value+"' class='form-control load-control-field' /></div>";
+		$item.html(a);
+		$item.find('input:file').select().focus();
+	}
 	function editControl(item){
 		var $item = item;
 		var type = $item.attr('data-elem');
 		var value = '';
 		var target = '#'+$item.attr('id');
-
 		switch(type) {
 			case 'heading' : value = $item.text();
 			break;
 			case 'paragraph' : value = $item.text();
-			break;
-			case 'textField' : value = $item.val();
-			break;
-			case 'submitButton' : value = $item.val();
 			break;
 		}
 		var a = '<div class="edit-control"><b>Value&nbsp;</b>&nbsp;<input type="text" value="'+value+'" data-oldvalue="'+value+'" class="form-control edit-control-field">&nbsp;<button type="button" data-action="edit-ok" data-target="'+target+'" class="btn btn-sm btn-success">Ok</button><button type="button" data-action="edit-cancel"  data-target="'+target+'" class="btn btn-sm btn-default">Cancel</button></div></div>';
 		$item.html(a);
 		$item.find('input:text').select().focus(); //focus(function() { $item.find('input:text').select(); });
 	}
+	function addElement(item){
+		var $item = item;
+		var type = $item.attr('data-elem');
+		var value = '';
+		var target = '#'+$item.attr('id');
+		var value = $item.html();
+		var a = "<div class='add-control'><b>Value&nbsp;</b>&nbsp;<input type='text' placeholder = 'Enter Default Value ' data-oldvalue = '"+value+"' class='form-control add-control-field'>&nbsp;<button type='button' data-action='edit-ok' data-target='"+target+"' class='btn btn-sm btn-success'>Ok</button><button type='button' data-action='add-cancel'  data-target='"+target+"' class='btn btn-sm btn-default'>Cancel</button></div></div>";
+		$item.html(a);
+		$item.find('input:text').select().focus();
+	}
+	$work_area.on('change','.load-control-field',function(event){
+			var $loadField = this;
+			var address;
+			var $loadFile = $($loadField).parent();
+			if ($loadField.files && $loadField.files[0]) {
+	            var reader = new FileReader();
 
+	            reader.onload = function (e) {
+	             	address = e.target.result;   
+	             	$loadFile.html($($loadField).attr('data-oldhtml'));
+	        		$loadFile.find('img').attr('src',address);
+	            }
+
+	            reader.readAsDataURL($loadField.files[0]);
+	        }
+	        
+	});
+	$work_area.on('click','.add-control button',function(event){
+		var action = $(this).attr('data-action');
+		var targetId = $(this).attr('data-target');
+		var $target = $(targetId);
+		var $addElement = $target.find('.add-control');
+		var $addField = $addElement.find('>.add-control-field');
+		var type = $target.attr('data-elem');
+		var newval = $addField.val();
+		var oldval = $addField.attr('data-oldvalue');
+		$target.html(oldval);
+		//alert(action + ' ' + targetId + ' ' + type + ' ' + newval + ' ' + oldval);
+		//alert($target.attr('id') + ' ' + newval);
+		switch(action){
+			case 'add-ok' : if(newval == ""){
+								alert("Cannot be Blank.");
+								newval = oldval;
+							}
+							break;
+			default : break;
+		}
+		switch(type){
+			case 'table' : 
+				$target = $target.find('tr');
+				$target.append('<th>'+newval+'</th>');
+				break;
+			case 'list' : 
+				$editTarget = $target.find('ul[data-mode = "edit"]');
+				if($editTarget.attr('data-mode') == undefined){
+					$editTarget = $target.find('ol[data-mode = "edit"]');
+				}
+				$target = $editTarget;
+				$target.append('<li>'+newval+'</li>');
+				break;
+			default : break;
+		}
+		$addElement.remove();
+	});
 	$work_area.on('click','.edit-control button',function(event) {
 		var action  = $(this).attr('data-action');
 		var targetId = $(this).attr('data-target');
@@ -253,19 +356,18 @@ jQuery(document).ready(function($) {
 		var type = $target.attr('data-elem');
 		var newval = $editField.val();
 		var oldval = $editField.attr('data-oldvalue');
-
+		
 		switch(action) {
 			case 'edit-ok' : if(newval=="") {
 				alert('Cannot be Blank.');
 				newval = oldval;
 			}
-			break;
+				break;
 			case 'edit-cancel' : newval = oldval;
-			break;
+				break;
 			default: 
-			break;
+				break;
 		}
-
 		switch(type) {
 				case 'heading' : 
 					$target.html('<h3>'+newval+'</h3><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
@@ -273,24 +375,16 @@ jQuery(document).ready(function($) {
 				case 'paragraph': 
 					$target.html('<p>'+newval+'</p><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul></span>');
 					break;
-				case 'textField' : 
-					$target.html('<input type="text" value="'+newval+'"/><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
-					break;
-				case 'submitButton' : 
-					$target.html('<input type="submit" value="'+newval+'"/><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
-					break;
 				default : 
 					break;
 
 		}
-		$editControl.remove();
 	}); 
 
 	function removeControl(item){
 		//var $item = $(this).closest('li');
 		var $item = item;
 		var $parent = $item.parent('.dynamic-panel');
-		//$item.remove();
 		if($parent.children().length == 1 || ($parent.hasClass('sub-panel') == true && $parent.children().length <= 2)) { // IF the control was the last inside the panel den drop the panel also
 			if($item.hasClass('placeholder') || $item.hasClass('sub-panel')) {
 
@@ -381,17 +475,20 @@ jQuery(document).ready(function($) {
 	function addControl($control, $context) {
 
 		$type = $control.attr('data-elem');
-
 		switch($type) {
-			case "heading" : addHeading($control, $context);
+			case "heading" : addHeading($control, $context,$control.attr('data-size'));
 				break;
 			case "paragraph" : addParagraph($control, $context);
 				break;
 			case "panel" : addPanel($control, $context);
 				break;
-			case "textField" : addTextField($control, $context);
+			case "image" : addImage($control, $context);
 				break;
-			case "submitButton" : addSubmitButton($control, $context);
+			case "hr" : addHr($control, $context);
+				break;
+			case "table" : addTable($control, $context);
+				break;
+			case "list" : addList($control, $context);
 				break;
 			default : 
 				break;
@@ -399,12 +496,53 @@ jQuery(document).ready(function($) {
 
 		arPanels.renderRightBar();
 	}
+	function addHr($control, $context){
+		var parentId = $context.attr('data-parent');
+		var hrId = arPanels.addControl(parentId, $control.attr('data-elem'));
+		hrId = 'panel-'+parentId+'-hr-'+hrId;
+		var $data = $('<hr data-elem = "hr" data-parent = "'+parentId+'" id = "'+hrId+'">');
+		$data.appendTo($context);
+		arPanels.activatePanel($context.attr('id'));
+	}
+	function addTable($control, $context){
+		var parentId = $context.attr('data-parent');
+		var tableId = arPanels.addControl(parentId, $control.attr('data-elem'));
+		tableId = 'panel-'+parentId+'-table-'+tableId;
+		var $data = $('<li data-elem="table" class = "table-responsive" data-parent = "'+parentId+'"   id="'+tableId+'"><table class = "table"><thead><tr></tr></thead></table>'+
+			'<ul class="control-action"><li data-action="add" data-target="#'+tableId+'"><span class="fa fa-plus-square-o"></li><li data-action="delete" data-target="#'+tableId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>');
+		$data.appendTo($context);
+		arPanels.activatePanel($context.attr('id'));
+	}
+	function addList($control, $context){
+		var parentId = $context.attr('data-parent');
+		var listId = arPanels.addControl(parentId, $control.attr('data-elem'));
+		var listType = $control.attr('data-type');
+		listId = 'panel-'+parentId+'-list-'+listId;
+		var $data = $('<li data-elem="list" data-parent = "'+parentId+'"   id="'+listId+'"><'+listType+' data-mode = "edit"></'+listType+'>'+
+			'<ul class="control-action"><li data-action="add" data-target="#'+listId+'"><span class="fa fa-plus-square-o"></li><li data-action="delete" data-target="#'+listId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>');
+		$data.appendTo($context);
+		arPanels.activatePanel($context.attr('id'));
+	}
+	function addImage($control, $context){
+		var parentId = $context.attr('data-parent');
+		var imageId = arPanels.addControl(parentId, $control.attr('data-elem'));
+		imageId = 'panel-'+parentId+'-image-'+imageId;
+		var $data = $('<li data-elem = "image" height = "150" width = "150" style="display:inline-block" id = "'+imageId+'" data-parent = "'+parentId+'" ><img src = "#" height = "150" width = "150">'+
+			'<ul class="control-action"><li data-action="load" data-target="#'+imageId+'"><span class="fa fa-file-picture-o"></li><li data-action="delete" data-target="#'+imageId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+			'</li>').resizable();
+		$data.appendTo($context);
+		arPanels.activatePanel($context.attr('id'));
 
-	function addHeading($control, $context) {
+	}
+	function addHeading($control, $context, size) {
 
-		var headingId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="heading" id="heading-'+headingId+'"><h3>Heading</h3>'+
-			'<ul class="control-action"><li data-action="edit" data-target="#heading-'+headingId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#heading-'+headingId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+		var parentId = $context.attr('data-parent');
+		var headingId = arPanels.addControl(parentId,$control.attr('data-elem'));
+		headingId = 'panel-'+parentId+'-heading-'+headingId;
+		var $data = $('<li data-elem="heading"  data-parent = "'+parentId+'"   id="'+headingId+'"><h'+size+'>Heading</h'+size+'>'+
+			'<ul class="control-action"><li data-action="edit" data-target="#'+headingId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#'+headingId+'"><span class="fa fa-times-circle-o"></li></ul>'+
 			'</li>');
 
 		//arPanels.addHeading($context,$data);
@@ -413,27 +551,11 @@ jQuery(document).ready(function($) {
 	}
 
 	function addParagraph($control, $context) {
-		var paragraphId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="paragraph" id="paragraph-'+paragraphId+'"><p>Paragraph</p>'+
-			'<ul class="control-action"><li data-action="edit" data-target="#paragraph-'+paragraphId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#paragraph-'+paragraphId+'"><span class="fa fa-times-circle-o"></li></ul>'+
-			'</li>');
-		$data.appendTo($context);
-		arPanels.activatePanel($context.attr('id'));
-	}
-
-	function addTextField($control, $context) {
-		var textFieldId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="textField" id="textField-'+textFieldId+'"><input type="text" placeholder="Enter Value" class="input ">'+
-			'<ul class="control-action"><li data-action="edit" data-target="#textField-'+textFieldId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#textField-'+textFieldId+'"><span class="fa fa-times-circle-o"></li></ul>'+
-			'</li>');
-		$data.appendTo($context);
-		arPanels.activatePanel($context.attr('id'));
-	}
-
-	function addSubmitButton($control, $context) {
-		var submitButtonId = arPanels.addControl($control.attr('data-elem'));
-		var $data = $('<li data-elem="'+$control.attr('data-elem')+'" id="submitButton-'+submitButtonId+'"><input type="submit" value="Button">'+
-			'<ul class="control-action"><li data-action="edit" data-target="#submitButton-'+submitButtonId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#submitButton-'+submitButtonId+'"><span class="fa fa-times-circle-o"></li></ul>'+
+		var parentId = $context.attr('data-parent');
+		var paragraphId = arPanels.addControl(parentId,$control.attr('data-elem'));
+		paragraphId = 'panel-'+parentId+'-paragraph-'+paragraphId;
+		var $data = $('<li data-elem="paragraph"  data-parent = "'+parentId+'"  id="'+paragraphId+'"><p>Paragraph</p>'+
+			'<ul class="control-action"><li data-action="edit" data-target="#'+paragraphId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#'+paragraphId+'"><span class="fa fa-times-circle-o"></li></ul>'+
 			'</li>');
 		$data.appendTo($context);
 		arPanels.activatePanel($context.attr('id'));
@@ -447,19 +569,30 @@ jQuery(document).ready(function($) {
 			addSubPanel($control,$context);
 		}
 		else {
-		var panelId = arPanels.addControl($control.attr('data-elem'));
-		$p = 	$('<ol class="dynamic-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').droppable({
+		var panelId = arPanels.addControl(0,$control.attr('data-elem'));
+		$p = 	$('<ol class="dynamic-panel" id="'+panelId+'" data-parent = "'+panelId+'" data-elem="panel"><li class="placeholder" id = "placeholder'+panelId+'"data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').droppable({
 					accept: ":not(.ui-sortable-helper) ", //:not('#tool-box-controls > li[data-elem=\"panel\"]')",
+					connectWith: ".dynamic-panel",
 					greedy : true,
+					cancel : ".placeholder",
 					drop : function(event, ui) {
-						$(this).find('.placeholder').remove();
+						$('#placeholder'+$(this).attr('id')).remove();
 						addControl(ui.draggable, $(this));
 
 					}
 				}).sortable({
 					containment : "document",
+					connectWith: ".dynamic-panel",
 					cursor : "move",
+					cancel : ".placeholder",
 					stop : function(e,ui) {
+						if(ui.item.parent().children(':not(.placeholder)').length > 0){
+							$('#placeholder'+ui.item.parent().attr('id')).remove();
+							//alert(ui.item.parent().children(':not(.placeholder)').length);
+						}
+
+						if($(this).children().length == 0)
+							$(this).append('<li class="placeholder" id = "placeholder'+panelId+'"data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li>');
 						arPanels.renderRightBar();
 			}
 				 })
@@ -468,22 +601,36 @@ jQuery(document).ready(function($) {
 
 	}
 	function addSubPanel($control,$context){
-		var panelId = arPanels.addControl($control.attr('data-elem'));
-		$p = $('<ol class="dynamic-panel sub-panel" id="'+panelId+'" data-elem="panel"><li class="placeholder" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').resizable({
+		var parentId = $context.attr('data-parent');
+		var panelId = arPanels.addControl(parentId,$control.attr('data-elem'));
+		$p = $('<ol class="dynamic-panel sub-panel" id="'+panelId+'" data-elem="panel" data-parent = "'+parentId+'"><li class="placeholder" id = "placeholder'+panelId+'" data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li></ol>').resizable({
 				handles:'e',
-        		containment:"parent",
+        		containment:"document"
+		}).draggable({
+			accept:"img"
 		}).droppable({
 					accept: ":not(.ui-sortable-helper) ", //:not('#tool-box-controls > li[data-elem=\"panel\"]')",
+					connectWith: ".dynamic-panel",
 					greedy : true,
+					cancel : ".placeholder",
 					drop : function(event, ui) {
-						$(this).find('.placeholder').remove();
+						$('#placeholder'+$(this).attr('id')).remove();
 						addControl(ui.draggable, $(this));
 
 					}
 				}).sortable({
 					containment : "document",
+					connectWith: ".dynamic-panel",
 					cursor : "move",
+					cancel : ".placeholder",
 					stop : function(e,ui) {
+						if(ui.item.parent().children(':not(.placeholder)').length > 0){
+							$('#placeholder'+ui.item.parent().attr('id')).remove();
+							//alert(ui.item.parent().children(':not(.placeholder)').length);
+						}
+						
+						if($(this).children().length == 0)
+							$(this).append('<li class="placeholder" id = "placeholder'+panelId+'"data-elem="No Controls"><h3>Panel <span class="notice-text">Add Controls Here</span></h3><span class="trash"></span></li>');
 						arPanels.renderRightBar();
 			}
 				 })
@@ -494,8 +641,9 @@ jQuery(document).ready(function($) {
 	  		var $htmlString = $( "#dynamic-controls" ).clone();
 	  		$htmlString.find('.control-action').remove();
 	  		$htmlString.find('.edit-control').remove();
+	  		$htmlString.find('li.placeholder').parent().remove();
 	  		var s = $htmlString.html();
-	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="../assets/css/build-style.css"></head><body><div id="header"><h2>#ResumeBuilder</h2></div><div id="content">'  + s +'</div><script type="text/javascript" src="../assets/external/jquery/jquery.js"></script><script type="text/javascript" src="../assets/js/form.js"></script></body></html>';
+	  		s = '<html><head> <title> Page View </title><link rel="stylesheet" type="text/css" href="../assets/css/build-style.css"><link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css"></head><body><div id="header"><h2>#ResumeBuilder</h2></div><div id="content">'  + s +'</div><script type="text/javascript" src="../assets/external/jquery/jquery.js"></script><script type="text/javascript" src="../assets/js/form.js"></script></body></html>';
 	  		s = s.replace('/"','"');
 	  		arPanels.createJsonObject(0,'#dynamic-controls', arPanels.jsonObject.work_area);
 	  		var jsonObject = JSON.stringify(arPanels.jsonObject);
