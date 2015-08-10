@@ -25,6 +25,13 @@ jQuery(document).ready(function($) {
 				break;
 				case 'submitButton' : c_values.push(null);
 				break;
+				case 'list' :  if(c.attr('data-type') == 'ul')
+									c.values.push(c.find('ul').html());
+								else
+									c.values.push(c.find('ol').html());
+				break;
+				case 'table' : c.values.push(c.find('table').html());
+				break;
 				default : 
 				break;
 			}

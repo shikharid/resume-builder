@@ -17,11 +17,11 @@ if(isset($_POST["content"])) {
 	//$data['data'] = json_decode($_POST['jsonObject'], true);
 	$builder->decodeJson($_POST['jsonObject']);
 
-	$data['data'] = $builder->getformStructure();
+	$data['data'] = $builder->getformStructure(); //json_decode($_POST['jsonObject']);//
 
-	$form = new Form();
+	$form = new Form($dbHandle);
 
-	$data[] = $form->createFormTable($dbHandle, $builder->getFileBaseName(), $builder->getformStructure());
+	$data['success'] = $form->createFormTable($dbHandle, $builder->getFileBaseName(), $builder->getformStructure());
 
 	$data['file'] = BASE_URL.'/forms/'.$builder->getFileName();
 

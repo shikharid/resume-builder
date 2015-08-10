@@ -7,59 +7,45 @@ class Form {
 	private $data = array();
 
 	public function __construct($dbh=null) {
+
+		$init_query = "CREATE TABLE IF NOT EXISTS form_file (table_name varchar(60), file_name varchar(60))";
+		$dbh->query($init_query);
 	}
 
 	public function createFormTable($dbh, $tablename, $structure) {
 
-		$query = "CREATE TABLE IF NOT EXISTS $tablename ( control_id varchar(60) not null, value text, html text) ";
-
-		$dbh->query($query);
-
-			//mysqli_query("CREATE TABLE IF NOT EXISTS $tablename"."_data ")
-			foreach ($structure['controls'] as $control) {
+		$filename = $tablename.".html";
+		foreach ($structure['controls'] as $control) {
 				$controls_id[] = preg_replace('/-/', '_', $control['id']);
-				$dbh->query("INSERT INTO $tablename values('".$control['id']."','".$control['value']."','".$dbh->escape($control['html'])."')");
-				$dbh->show_errors();
 			}
 
-			// now creating table for form data filled by user
-			$formdata_table_cols = join(' varchar(60) ,', $controls_id)." varchar(60)";
-			$formdata_tablename  = $tablename."_data";
-			$dbh->query("CREATE TABLE IF NOT EXISTS $formdata_tablename ( user_id int not null primary key auto_increment, $formdata_table_cols )");
-				return array(
-					'success' => true,
-					'message' => "$formdata_tablename created successfully"
-					);
-			// //return array('cols' => $formdata_table_cols);
+		$formdata_table_cols = join(' varchar(60) ,', $controls_id)." varchar(60)";
 
-			// return array(
-			// 	'success' => true,
-			// 	'message' => "$tablename table created successfully"
-			// 	);
-		// } else {
+		$query = "CREATE TABLE IF NOT EXISTS $tablename ( user_id varchar(30) not null, $formdata_table_cols )";
 
-		// 		return array(
-		// 			'success' => false,
-		// 			'message' => "Error Creating $tablename table"
-		// 		);
-		// 	}
+		if($dbh->query($query)==false) {
+			$dbh->query("INSERT INTO form_file values('$tablename', '$filename')");
+			if($dbh->rows_affected > 0 ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function addFormEntry($dbh, $form_id, $values) {
 
-		$formtable = $form_id."_data";
+		$formtable = $form_id;
 
-		$query = "INSERT INTO $formtable VALUES('default,'".join("','",$dbh->escape($values))."')";
+		$query = "INSERT INTO $formtable VALUES('abc','".join("','",$dbh->escape($values))."')";
 
 		$dbh->query($query);
-		//if($dbh->rows_affected > 0) {
-			return $this->getFormData($dbh, $form_id);
-		// } else {
-		// 	return array(
-		// 	'success' => false,
-		// 	'message' => 'Error Adding Entry'
-		// 	);
 
+		if($dbh->rows_affected > 0 ){
+			// return $this->getFormData($dbh, $form_id);
+			return true;
+		}
+		return false;
 	}
 
 	public function getFormData($dbh, $form_id) {

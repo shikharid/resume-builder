@@ -122,7 +122,7 @@ jQuery(document).ready(function($) {
 		getActivePanel : function() {
 			return this.activePanel;
 		},
-
+ 
 		/*
 			function renderRightBar
 				- Render the Right panels and control panel to update the changes of the added, deleted panels and controls
@@ -172,18 +172,19 @@ jQuery(document).ready(function($) {
 				var id = $panel.attr('id');
 				var width = $panel.width() / $panel.parent('ol').width() * 100;
 				var inline = ((/inline/).test($panel.css('display')))?true:false;
-				var emptyCheck = '#placeholder'+$(this).attr('id');
-				if($panel.find(emptyCheck).length == 0){
-					continue;
-				}
+				var emptyCheck = '#placeholder'+id;
+				// if($panel.find(emptyCheck).length == 0){
+				// 	continue;
+				// }
 				var $panelDef = {
 					'type' : type,
 					'width' : width,
-					'inline' : inline,
+					//'inline' : inline,
 					'id' : id,
 					'parentId' : $panel.parent('ol').attr('id'),
 					'controls' : [],
 				};
+				//console.log($panelDef);
 				this.prepareControlJson('#'+id,$panelDef.controls)
 				context.panel.push($panelDef);
 			}
@@ -200,6 +201,7 @@ jQuery(document).ready(function($) {
 				var type = $control.attr('data-elem');
 				var id = $control.attr('id');
 
+				//console.log(id);
 				
 					var $controlDef = {
 						'type' : type,
@@ -647,6 +649,7 @@ jQuery(document).ready(function($) {
 	  		s = s.replace('/"','"');
 	  		arPanels.createJsonObject(0,'#dynamic-controls', arPanels.jsonObject.work_area);
 	  		var jsonObject = JSON.stringify(arPanels.jsonObject);
+	  		//console.log(jsonObject);
 	  		$.ajax({
 	  			url: 'save.php',
 	  			type: 'POST',
@@ -657,9 +660,12 @@ jQuery(document).ready(function($) {
 	  		})
 	  		.done(function(data) {
 	  			data = $.parseJSON(data);
-	  			console.log(data);
+	  			if(data.success) {
+	  				alert("Form Created Successfully!");
+	  			}
+	  			//console.log(data);
 	  			window.open(data.file,"Final Build");
-	  			console.log("success");
+	  			//console.log("success");
 	  		})
 	  		.fail(function(data) {
 	  			console.log("error");
@@ -668,23 +674,6 @@ jQuery(document).ready(function($) {
 	  		.always(function() {
 	  			console.log("complete");
 	  		});
-	  		
-	  		// $.ajax({
-	  		// 	type : "POST",
-	  		// 	url : "save.php",
-	  		// 	data : {
-	  		// 		content : s,
-	  		// 		jsonObject : jsonObject,
-	  		// 	},
-	  		// 	success: function(data) {
-	  		// 		data = $.parseJSON(data);
-	  		// 		console.log(data);
-	  		// 		 window.open(data.file,"Final Build");
-     //              }
-	  		// });
-
-	  	//$(panelIdControl).addClass('sub-panel');
-		//$(panelIdControl).addClass('ui-widget-content');
 	});
 
 	$('#rt-panel-hide').on('click', function(event) {
