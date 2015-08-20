@@ -1,0 +1,31 @@
+.control-action {
+	list-style-type: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0;
+	margin: 0;
+	border-left: 1px solid #ccc;
+	height: 100%;
+}
+.control-action > li {
+	cursor: pointer;
+	padding: 3px;
+	border-bottom: 1px dashed #ccc;
+}
+.control-action > li:last-child {
+	border-bottom: none;
+}
+.control-action > li:hover {
+	background: #3b5998;
+}
+#viewModal .modal-dialog  {
+		top:5%;
+		outline: none;
+  		width:75%;
+  	}
+  	iframe {
+  		width: 100%;
+  		height: 75%;
+  	}
+

@@ -1,5 +1,6 @@
 jQuery(document).ready(function($) {
 	
+	
 	$('.dynamic-panel > li > input[type="submit"]').on('click', function(event) {
 
 		var a = document.location.pathname.split('/');

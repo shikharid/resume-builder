@@ -332,8 +332,12 @@ jQuery(document).ready(function($) {
 							break;
 			default : break;
 		}
+		if(newval == "")
+			return;
 		switch(type){
 			case 'table' : 
+				var colCount = parseInt($target.find('table').attr('data-col'), 10) + 1;
+				$target.find('table').attr('data-col',colCount);
 				$target = $target.find('tr');
 				$target.append('<th>'+newval+'</th>');
 				break;
@@ -358,7 +362,6 @@ jQuery(document).ready(function($) {
 		var type = $target.attr('data-elem');
 		var newval = $editField.val();
 		var oldval = $editField.attr('data-oldvalue');
-		
 		switch(action) {
 			case 'edit-ok' : if(newval=="") {
 				alert('Cannot be Blank.');
@@ -372,7 +375,8 @@ jQuery(document).ready(function($) {
 		}
 		switch(type) {
 				case 'heading' : 
-					$target.html('<h3>'+newval+'</h3><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
+				    var size = $target.attr('data-size');
+					$target.html('<h'+size+'>'+newval+'</h'+size+'><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul>');
 					break;
 				case 'paragraph': 
 					$target.html('<p>'+newval+'</p><ul class="control-action"><li data-action="edit" data-target="'+targetId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="'+targetId+'"><span class="fa fa-times-circle-o"></li></ul></span>');
@@ -510,7 +514,7 @@ jQuery(document).ready(function($) {
 		var parentId = $context.attr('data-parent');
 		var tableId = arPanels.addControl(parentId, $control.attr('data-elem'));
 		tableId = 'panel-'+parentId+'-table-'+tableId;
-		var $data = $('<li data-elem="table" class = "table-responsive" data-parent = "'+parentId+'"   id="'+tableId+'"><table class = "table"><thead><tr></tr></thead></table>'+
+		var $data = $('<li data-elem="table" class = "table-responsive" data-parent = "'+parentId+'"   id="'+tableId+'"><table class = "table" data-col = "0"><thead><tr></tr></thead></table>'+
 			'<ul class="control-action"><li data-action="add" data-target="#'+tableId+'"><span class="fa fa-plus-square-o"></li><li data-action="delete" data-target="#'+tableId+'"><span class="fa fa-times-circle-o"></li></ul>'+
 			'</li>');
 		$data.appendTo($context);
@@ -531,7 +535,7 @@ jQuery(document).ready(function($) {
 		var parentId = $context.attr('data-parent');
 		var imageId = arPanels.addControl(parentId, $control.attr('data-elem'));
 		imageId = 'panel-'+parentId+'-image-'+imageId;
-		var $data = $('<li data-elem = "image" height = "150" width = "150" style="display:inline-block" id = "'+imageId+'" data-parent = "'+parentId+'" ><img src = "#" height = "150" width = "150">'+
+		var $data = $('<li data-elem = "image"   style="display:inline-block" id = "'+imageId+'" data-parent = "'+parentId+'" ><div ><img src = "#" height = "150px"></div>'+
 			'<ul class="control-action"><li data-action="load" data-target="#'+imageId+'"><span class="fa fa-file-picture-o"></li><li data-action="delete" data-target="#'+imageId+'"><span class="fa fa-times-circle-o"></li></ul>'+
 			'</li>').resizable();
 		$data.appendTo($context);
@@ -543,7 +547,7 @@ jQuery(document).ready(function($) {
 		var parentId = $context.attr('data-parent');
 		var headingId = arPanels.addControl(parentId,$control.attr('data-elem'));
 		headingId = 'panel-'+parentId+'-heading-'+headingId;
-		var $data = $('<li data-elem="heading"  data-parent = "'+parentId+'"   id="'+headingId+'"><h'+size+'>Heading</h'+size+'>'+
+		var $data = $('<li data-elem="heading"  data-parent = "'+parentId+'"   id="'+headingId+'" data-size = "'+size+'"><h'+size+'>Heading</h'+size+'>'+
 			'<ul class="control-action"><li data-action="edit" data-target="#'+headingId+'"><span class="fa fa-pencil"></li><li data-action="delete" data-target="#'+headingId+'"><span class="fa fa-times-circle-o"></li></ul>'+
 			'</li>');
 
@@ -638,6 +642,9 @@ jQuery(document).ready(function($) {
 				 })
 				.appendTo($context);
 	}
+		$("#edit-form").click(function(){
+			window.open("viewform.php","Choose Forms To Edit");
+		});
 		$( "#save" ).click(function(e) {
 			e.preventDefault();
 	  		var $htmlString = $( "#dynamic-controls" ).clone();

@@ -1,0 +1,9 @@
+#viewModal .modal-dialog  {
+		top:5%;
+		outline: none;
+  		width:75%;
+  	}
+  	iframe {
+  		width: 100%;
+  		height: 75%;
+  	}

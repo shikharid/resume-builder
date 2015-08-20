@@ -6,8 +6,13 @@
 	//define("SITE_HOST","http://intern2015.altwareindia.com");
 	define("SITE_PORT","80");
 	define("SITE_ROOT", '');
+<<<<<<< HEAD
+	//define("BASE_URL","http://localhost/resume-builder");
+	define("BASE_URL",SITE_HOST."/shikhar/resume-builder");
+=======
 	define("BASE_URL","http://localhost/resume-builder");
 	// define("BASE_URL",SITE_HOST."/ashif/formbuilder");
+>>>>>>> origin/master
 
 ##-------------- ASSETS ------------------------------##
 	
@@ -32,6 +37,18 @@
 
 ##-------------- DATABASE CREDENTIALS ---------------##
 
+<<<<<<< HEAD
+	 define("DB_DATABASE", "altwarei_builder");
+	 define("DB_USER","altwarei_resume");
+	 define("DB_PASS", "Altware@2015");
+	 define("DB_HOST", "altwareindia.com");
+
+
+	//define("DB_USER", "root");
+	//define("DB_HOST", "localhost");
+	//define("DB_PASS", "");
+	//define("DB_DATABASE", "altware");
+=======
 	// define("DB_DATABASE", "altwarei_builder");
 	// define("DB_USER","altwarei_resume");
 	// define("DB_PASS", "Altware@2015");
@@ -42,4 +59,5 @@
 	define("DB_HOST", "localhost");
 	define("DB_PASS", "tiger");
 	define("DB_DATABASE", "altware");
+>>>>>>> origin/master
 ?>

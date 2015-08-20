@@ -13,8 +13,8 @@ $form_id =  $_POST['filename'];
 
 $field_values = $_POST['field_values'];
 
-$form = new Form();
+//$form = new Form();
 
-$data = $form->addFormEntry($dbHandle, $form_id, $field_values);
+//$data = $form->addFormEntry($dbHandle, $form_id, $field_values);
 
-echo json_encode($data);
+echo $field_values;
